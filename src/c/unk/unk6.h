@@ -10,7 +10,7 @@ void f_1AC6A(char *num);
 void f_1AC7E(char *num);
 void f_1AC92(char *num);
 char f_1ADB6(char *num);
-char cmplx_abs(char *num);
+char num_cmplx_abs(char *num);
 void f_1AFB8(char *num);
 char f_1AFD8(char *num, char b);
 char num_sign(char *num);

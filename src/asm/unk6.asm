@@ -2047,7 +2047,7 @@ _f_16E44:
 	MOV ER0, ER6
 	BL _num_cpy
 	MOV ER0, ER8
-	BL _cmplx_abs
+	BL _num_cmplx_abs
 	CMP R0, #0H
 	BNE _$j_16e30
 	MOV ER2, BP
@@ -2068,7 +2068,7 @@ _f_16E44:
 IF ENABLE_CMPLX == 1
 ; FUNCTION: GY454XE  Re 16EA2
 ; FUNCTION: GY455XE  Im 16EA2
-_cmplx_square_1:
+_num_cmplx_square_1:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -2410,7 +2410,7 @@ _$j_17148:
 
 ; FUNCTION: GY454XE  Re 17150
 ; FUNCTION: GY455XE  Im 17150
-_cmplx_cube:
+_num_cmplx_cube:
 	PUSH LR
 	PUSH FP
 	MOV FP, SP
@@ -2424,19 +2424,19 @@ _cmplx_cube:
 	MOV ER2, BP
 	MOV ER0, #-14H
 	ADD ER0, FP
-	BL _cmplx_square_1
+	BL _num_cmplx_square_1
 	MOV ER2, #-14H
 	ADD ER2, FP
 	MOV ER0, BP
-	BL _cmplx_square_1
+	BL _num_cmplx_square_1
 	BAL _$j_17148
 
 ; FUNCTION: GY454XE  Re 1717C
 ; FUNCTION: GY455XE  Im 1717C
-_cmplx_square:
+_num_cmplx_square:
 	PUSH LR
 	MOV ER2, ER0
-	BL _cmplx_square_1
+	BL _num_cmplx_square_1
 	POP PC
 ENDIF
 
@@ -2475,15 +2475,15 @@ _$j_171c0:
 	BL _f_17110
 	BAL _$j_171bc
 _$j_171c6:
-	BL _cmplx_square
+	BL _num_cmplx_square
 	BAL _$j_171bc
 _$j_171cc:
-	BL _cmplx_cube
+	BL _num_cmplx_cube
 	BAL _$j_171bc
 
 ; FUNCTION: GY454XE  Re 171D2
 ; FUNCTION: GY455XE  Im 171D2
-_f_171D2:
+_num_conjg:
 	PUSH LR
 	PUSH XR4
 	L R2, [ER0]
@@ -2496,7 +2496,7 @@ _f_171D2:
 
 ; FUNCTION: GY454XE  Re 171E6
 ; FUNCTION: GY455XE  Im 171E6
-_f_171E6:
+_num_arg:
 	PUSH LR
 	PUSH XR4
 	MOV ER4, ER0
@@ -3256,13 +3256,95 @@ _f_17662:
 	BL _num_div_r
 	POP PC
 
-; Unused.
+IF ENABLE_REMAINDER == 1
+; FUNCTION: GY461XE  Im 16CD4
+_f_16CD4_461E:
+	PUSH LR
+	L ER0, _d_08000
+	CMP R1, #5H
+	BGE _$j_06d98_461e
+	BL _f_1768A
+	BGE _$j_06d98_461e
+	L ER0, _reg1
+	CMP R1, #05H
+	BGE _$j_06d98_461e
+	BL _f_1768A
+	BGE _$j_06d98_461e
+	L R0, _d_08009
+	BEQ _$j_06d98_461e
+	L R0, _reg1_9
+	BEQ _$j_06d98_461e
+	L ER0, _d_08000
+	L ER2, _reg1
+	BL _f_1768E
+	BGE _$j_06d18_461e
+	L ER0, _reg1
+	L ER2, _d_08000
+	BL _f_1768E
+_$j_06d18_461e:
+	MOV ER2, #10H
+	BL _f_1768E
+	BGE _$j_06d98_461e
+	BL _mv_reg6_reg0
+	BL _num_div_r
+	BL _mv_reg3_reg1
+	BL _f_19794
+	BL _mv_reg1_reg3
+	BL _mv_reg3_reg0
+	BL _num_mul_r
+	BL _mv_reg1_reg6
+	BL _f_19FA6
+	BL _mv_reg1_reg3
+	L R0, _reg1_9
+	CMP R0, #0F0H
+	BGE _$j_06d90_461e
+	L ER0, _reg1
+	BL _f_1768A
+	BGE _$j_06d98_461e
+	L R0, _d_08009
+	CMP R0, #0H
+	BEQ _$j_06d90_461e
+	L ER0, _d_08000
+	BL _f_1768A
+	BGE _$j_06d98_461e
+	BL _f_1798C
+	CMP R0, #0AH
+	BLT _$j_06d76_461e
+	ADD R0, #6H
+_$j_06d76_461e:
+	L ER2, _d_08000
+	ADD R2, R0
+	DAA R2
+	ADDC R3, #0H
+	DAA R3
+	MOV R0, #11H
+	MOV R1, #1H
+	SUB R2, R0
+	DAS R2
+	SUBC R3, R1
+	DAS R3
+	BLT _$j_06d98_461e
+_$j_06d90_461e:
+	BL _f_18BA4
+	MOV R0, #0H
+_$j_06d96_461e:
+	POP PC
+_$j_06d98_461e:
+	MOV R0, #1H
+	BAL _$j_06d96_461e
+ENDIF
+
 ; FUNCTION: GY454XE  Re 1768A
 ; FUNCTION: GY455XE  Im 1768A
 ; FUNCTION: GY460XF  Im 16DE6
 _f_1768A:
 	MOV R2, #10H
 	MOV R3, #1H
+
+; FUNCTION: GY454XE  Re 1768E
+; FUNCTION: GY455XE  Im 1768E
+; FUNCTION: GY460XF  Im 16DEA
+_f_1768E:
 	SUB R0, R2
 	DAS R0
 	SUBC R1, R3
@@ -8934,15 +9016,15 @@ _$j_1a472:
 	BL _f_17698
 	L R4, _arith_op
 	CMP R4, #5H
-	BLT _$j_1a4be
-	BEQ _$j_1a4b8
+	BLT _$j_1a4be  ; 0, 1, 2, 3, 4
+	BEQ _$j_1a4b8  ; 5
 	CMP R4, #7H
-	BLT _$j_1a4a0
-	BEQ _$j_1a49a
+	BLT _$j_1a4a0  ; 6
+	BEQ _$j_1a49a  ; 7
 	CMP R4, #9H
-	BLT _$j_1a4b2
-	BEQ _$j_1a4ac
-_$j_1a49a:
+	BLT _$j_1a4b2  ; 8
+	BEQ _$j_1a4ac  ; 9
+_$j_1a49a:         ; 10+ (7)
 	BL _num_div_r
 	BAL _$j_1a4a4
 _$j_1a4a0:
@@ -9084,12 +9166,57 @@ _$j_1a59e:
 	BL _set_reg0_error
 	BAL _$j_1a590
 
-; May be a dummied out function
+; TODO: Dummied out function. Find the code from a ROM with remainder function.
 ; FUNCTION: GY454XE  Re 1A5A4
 ; FUNCTION: GY455XE  Im 1A5A4
 ; FUNCTION: GY460XF  Im 19D00
-_f_1A5A4:
+; FUNCTION: GY461XE  Im 19CB6
+_num_remainder:
+IF ENABLE_REMAINDER == 1
+	PUSH LR
+	LEA _arg0_ref
+	ST XR0, [EA+]
+	PUSH XR4
+	PUSH QR8
+	BL _f_15F2C
+	BL _l_regs
+	BL _f_18FD0
+	CMP R0, #0H
+	BNE _$j_19cf0_461e
+	BL _f_17698
+	BL _f_16CD4_461E
+	CMP R0, #0H
+	BNE _$j_19cf6_461e
+_$j_19cde_461e:
+	BL _st_reg1
+_$j_19ce2_461e:
+	BL _st_reg0
+	BL _f_19F94
+	POP QR8
+	POP XR4
+	POP PC
+_$j_19cf0_461e:
+	BL _set_reg0_error
+	BAL _$j_19ce2_461e
+_$j_19cf6_461e:
+	LEA _arg0_ref
+	L ER0, [EA+]
+	L ER2, [EA+]
+	BL _l_regs
+	BL _f_18FD0
+	BL _f_17698
+	BL _num_div_r
+	MOV ER0, #0H
+	MOV ER2, #0H
+	LEA _reg1
+	ST XR0, [EA+]
+	ST XR0, [EA+]
+	MOV R1, #70H
+	ST ER0, [EA+]
+	BAL _$j_19cde_461e
+ELSE
 	RT
+ENDIF
 
 ; FUNCTION: GY454XE  Re 1A5A6
 ; FUNCTION: GY455XE  Im 1A5A6
@@ -10254,7 +10381,7 @@ _$j_1ae20:
 ; FUNCTION: GY454XE  Re 1AE26
 ; FUNCTION: GY455XE  Im 1AE26
 ; FUNCTION: GY460XF  Im 1A582
-_cmplx_abs:
+_num_cmplx_abs:
 	PUSH LR
 	L R2, [ER0]
 	CMP R2, #-10H
@@ -10390,7 +10517,7 @@ _$j_1af32:
 ; FUNCTION: GY454XE  Re 1AF44
 ; FUNCTION: GY455XE  Im 1AF44
 ; FUNCTION: GY460XF  Im 1A6A0
-_f_1AF44:
+_num_cmplx_sqrt:
 	PUSH LR
 	PUSH XR12
 	MOV BP, ER0
@@ -11247,16 +11374,16 @@ PUBLIC _reset
 PUBLIC _num_cube
 PUBLIC _f_16DCA
 PUBLIC _f_16E44
-PUBLIC _cmplx_square_1
+PUBLIC _num_cmplx_square_1
 PUBLIC _f_16EE2
 PUBLIC _f_16F3A
 PUBLIC _f_16F5E
 PUBLIC _f_17110
-PUBLIC _cmplx_cube
-PUBLIC _cmplx_square
+PUBLIC _num_cmplx_cube
+PUBLIC _num_cmplx_square
 PUBLIC _f_17186
-PUBLIC _f_171D2
-PUBLIC _f_171E6
+PUBLIC _num_conjg
+PUBLIC _num_arg
 PUBLIC _f_17202
 PUBLIC _f_1724A
 PUBLIC _bcd_to_byte
@@ -11270,7 +11397,7 @@ PUBLIC _num_log
 PUBLIC _num_combi
 PUBLIC _num_permu
 PUBLIC _f_1A52A
-PUBLIC _f_1A5A4
+PUBLIC _num_remainder
 PUBLIC _num_factorial
 PUBLIC _f_1A5E2
 PUBLIC _f_1A5F6
@@ -11313,8 +11440,8 @@ PUBLIC _f_1AD86
 PUBLIC _f_1ADB6
 PUBLIC _f_1ADF0
 PUBLIC _f_1AE06
-PUBLIC _cmplx_abs
-PUBLIC _f_1AF44
+PUBLIC _num_cmplx_abs
+PUBLIC _num_cmplx_sqrt
 PUBLIC _f_1AFB8
 PUBLIC _f_1AFC8
 PUBLIC _f_1AFD8

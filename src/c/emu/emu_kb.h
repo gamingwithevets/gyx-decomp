@@ -30,7 +30,7 @@ enum es_stop_type {
 
 #endif
 
-void f_04DF6_E(void);
+void emu_update_screen(void);
 void f_04E44_E(void);
 void init_emu_kb(emu_kb *kb);
 void f_05338_E(char *a);

@@ -5028,8 +5028,7 @@ _filter_chars_cmplx:
 
 ; FUNCTION: GY465XG  Im 033F8
 _filter_chars_verif:
-; Casio didn't add an else clause here so in ROMs without VERIF it runs
-; the very next function instead. What a joke!
+; Oddity: No else clause here
 IF ENABLE_VERIF == 1
 	L R1, _mode
 	CMP R1, #89H

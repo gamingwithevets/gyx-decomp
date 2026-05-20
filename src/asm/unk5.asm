@@ -634,18 +634,18 @@ _operator_handlers:
 	DW _f_139E4
 	DW _f_13A72
 	DW _mat_mul
-	DW _f_14796
+	DW _num_nop
 	DW _num_stat_P
 	DW _num_stat_Q
 	DW _num_stat_R
-	DW _f_1479A
-	DW _f_147C4
-	DW _f_171D2
-	DW _f_171E6
+	DW _num_not
+	DW _num_neg
+	DW _num_conjg
+	DW _num_arg
 	DW _num_abs
 	DW _num_rnd
-	DW _f_14792
-	DW _f_14792
+	DW _num_invalid
+	DW _num_invalid
 	DW _num_sinh
 	DW _num_cosh
 	DW _num_tanh
@@ -664,40 +664,40 @@ _operator_handlers:
 	DW _num_acos
 	DW _num_atan
 	DW _num_log10
-	DW _f_14792
-	DW _f_14792
+	DW _num_invalid
+	DW _num_invalid
 	DW _num_log
 	DW _num_pol
 	DW _num_rec
-	DW _f_148E0
-	DW _f_1491C
-	DW _f_14958
-	DW _f_1499C
-	DW _f_14796
+	DW _num_or
+	DW _num_xor
+	DW _num_xnor
+	DW _num_and
+	DW _num_nop
 	DW _num_add
 	DW _num_sub
 	DW _num_mul
 	DW _num_div
-	DW _f_14792
-	DW _f_14BBC
+	DW _num_invalid
+	DW _num_angle
 	DW _num_permu
 	DW _num_combi
-	DW _f_12C68
-	DW _f_12CB6
-	DW _f_12C3A
-	DW _f_12C4C
+	DW _num_stat_xest
+	DW _num_stat_yest
+	DW _num_stat_x1est
+	DW _num_stat_x2est
 	DW _num_negate
-	DW _f_14792
-	DW _f_14792
-	DW _f_14792
-	DW _f_14792
+	DW _num_invalid
+	DW _num_invalid
+	DW _num_invalid
+	DW _num_invalid
 	DW _num_frac
-	DW _num_cmplx_pow
+	DW _num_pow
 	DW _num_nthroot
-	DW _f_14792
+	DW _num_invalid
 	DW _num_stat_to_t
-	DW _f_14792
-	DW _f_14792
+	DW _num_invalid
+	DW _num_invalid
 	DW _num_inverse
 	DW _num_square
 	DW _num_cube
@@ -706,18 +706,18 @@ _operator_handlers:
 	DW _num_deg
 	DW _num_rad
 	DW _num_grad
-	DW _cmplx_abs
-	DW _cmplx_rnd
-	DW _f_1AF44
-	DW _cmplx_add
-	DW _cmplx_sub
-	DW _cmplx_mul
-	DW _cmplx_div
-	DW _cmplx_negate
-	DW _cmplx_inverse
-	DW _cmplx_square
-	DW _cmplx_cube
-	DW _f_1A5A4
+	DW _num_cmplx_abs
+	DW _num_cmplx_rnd
+	DW _num_cmplx_sqrt
+	DW _num_cmplx_add
+	DW _num_cmplx_sub
+	DW _num_cmplx_mul
+	DW _num_cmplx_div
+	DW _num_cmplx_negate
+	DW _num_cmplx_inverse
+	DW _num_cmplx_square
+	DW _num_cmplx_cube
+	DW _num_remainder
 	DW _num_randint
 
 ; DATA: GY454XE  Re 01BB0
@@ -2589,6 +2589,7 @@ _$j_10e72:
 ; FUNCTION: GY454XE  Re 10E7A
 ; FUNCTION: GY455XE  Im 10E7A
 ; FUNCTION: GY460XF  Im 1051A
+; FUNCTION: GY461XE  Im 1051A
 _concat_result_template:
 	PUSH LR
 	PUSH XR8
@@ -2627,6 +2628,10 @@ _$j_10eb8:
 	MOV R2, #0C4H  ; Theta
 	BAL _$j_10e9c
 _$j_10ebc:
+IF ENABLE_REMAINDER == 1
+	CMP R0, #13H
+	BNE _$j_10598_461e
+ENDIF
 	CMP R8, #0H    ; Top result = Variable solved, bottom result = L-R
 	BNE _$j_10ecc
 	L R0, (_mode_ram+350)
@@ -2654,6 +2659,13 @@ _$j_10eea:
 	MOV ER0, ER10
 	POP XR8
 	POP PC
+IF ENABLE_REMAINDER == 1
+_$j_10598_461e:
+	CMP R8, #0H
+	BC EQ, _$j_10ef4
+	MOV R2, #'R'
+	BC AL, _$j_10e9c
+ENDIF
 _$j_10ef4:
 	MOV ER8, ER10
 	BAL _$j_10eea
@@ -6369,7 +6381,7 @@ _$j_12c2a:
 ; FUNCTION: GY454XE  Re 12C3A
 ; FUNCTION: GY455XE  Im 12C3A
 ; FUNCTION: GY460XF  Im 122D4
-_f_12C3A:
+_num_stat_x1est:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6383,7 +6395,7 @@ _f_12C3A:
 ; FUNCTION: GY454XE  Re 12C4C
 ; FUNCTION: GY455XE  Im 12C4C
 ; FUNCTION: GY460XF  Im 122E6
-_f_12C4C:
+_num_stat_x2est:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6402,7 +6414,7 @@ _$j_12c5c:
 ; FUNCTION: GY454XE  Re 12C68
 ; FUNCTION: GY455XE  Im 12C68
 ; FUNCTION: GY460XF  Im 12302
-_f_12C68:
+_num_stat_xest:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6445,7 +6457,7 @@ _$j_12cae:
 ; FUNCTION: GY454XE  Re 12CB6
 ; FUNCTION: GY455XE  Im 12CB6
 ; FUNCTION: GY460XF  Im 12350
-_f_12CB6:
+_num_stat_yest:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -9235,7 +9247,7 @@ _$j_13b82:
 	ADD ER4, #0AH
 	BL _mv_n8_n4
 	MOV ER0, ER6
-	BL _cmplx_abs
+	BL _num_cmplx_abs
 	CMP R0, #0H
 	BEQ _$j_13b96
 	B _$j_136b0
@@ -10431,21 +10443,21 @@ _$j_144e6:
 ; FUNCTION: GY454XE  Re 144F4
 ; FUNCTION: GY455XE  Im 144F4
 ; FUNCTION: GY460XF  Im 13FAE
-_f_144F4:
+_is_op_postfix_sto:
 	PUSH LR
 	PUSH R4
 	PUSH FP
 	MOV R2, R0
 	BL _get_token_type
-	MOV R0, #1H
-	CMP R2, #2H
+	MOV R0, #1H    ; Initialize return value
+	CMP R2, #2H    ; If operator, return 1
 	BEQ _$j_14510
-	CMP R2, #3H
+	CMP R2, #3H    ; If postfix, return 1
 	BEQ _$j_14510
-	CMP R2, #8H
+	CMP R2, #8H    ; If store token, return 1
 	BEQ _$j_14510
 _$j_1450e:
-	MOV R0, #0H
+	MOV R0, #0H    ; Return 0
 _$j_14510:
 	POP FP
 	POP R4
@@ -10454,20 +10466,20 @@ _$j_14510:
 ; FUNCTION: GY454XE  Re 14516
 ; FUNCTION: GY455XE  Im 14516
 ; FUNCTION: GY460XF  Im 13FD0
-_f_14516:
+_is_func_add_ans:
 	PUSH LR
 	PUSH R4
 	PUSH FP
 	MOV R2, R0
 	BL _get_token_type
-	CMP R2, #1H
+	CMP R2, #1H    ; If not function, return 0
 	BNE _$j_1450e
-	CMP R0, #5FH
+	CMP R0, #5FH   ; If negative sign, return 1
 	BEQ _$j_1452e
-	CMP R0, #21H
+	CMP R0, #33    ; If operator ID >= 33, return 0
 	BGE _$j_1450e
 _$j_1452e:
-	MOV R0, #1H
+	MOV R0, #1H    ; Return 1
 	BAL _$j_14510
 
 ; FUNCTION: GY454XE  Re 14532
@@ -10547,35 +10559,35 @@ _f_1458C:
 ; FUNCTION: GY460XF  Im 14056
 _f_1459C:
 	PUSH LR
-	BL _num_sign
+	BL _num_sign         ; Grab the number sign, store it
 	MOV R10, R0
-	MOV ER2, BP
-	ADD SP, #-14H
+	MOV ER2, BP          ; Copy number from [BP] to [BP-20]
+	ADD SP, #-20
 	MOV BP, SP
 	MOV ER0, BP
 	BL _num_cpy
-	AND R10, #00000010B
+	AND R10, #00000010B  ; If negative...
 	BEQ _$j_145bc
-	MOV R10, #1H
-	MOV ER0, BP
+	MOV R10, #1H         ; Force zero
+	MOV ER0, BP          ; Negate [BP]
 	BL _num_negate
 _$j_145bc:
-	MOV ER0, BP
-	ADD ER0, #0AH
+	MOV ER0, BP          ; Make the number 1 in [BP+10]
+	ADD ER0, #10
 	MOV R2, #1H
 	BL _num_fromdigit
-	MOV R0, #10H
-	ST R0, 12H[BP]
+	MOV R0, #10H         ; Force exponent to 10 (to make 1e10)
+	ST R0, 18[BP]
 	MOV ER0, BP
 	MOV ER2, BP
-	ADD ER2, #0AH
-	BL _f_1A410
-	L R8, 1H[BP]
-	L R7, 2H[BP]
-	L R6, 3H[BP]
-	L R5, 4H[BP]
-	L R4, 5H[BP]
-	ADD SP, #14H
+	ADD ER2, #10
+	BL _f_1A410          ; Add to [BP]
+	L R8, 1[BP]
+	L R7, 2[BP]
+	L R6, 3[BP]
+	L R5, 4[BP]
+	L R4, 5[BP]
+	ADD SP, #20
 	POP PC
 
 ; FUNCTION: GY454XE  Re 145E2
@@ -10872,21 +10884,21 @@ _$j_14790:
 ; FUNCTION: GY454XE  Re 14792
 ; FUNCTION: GY455XE  Im 14792
 ; FUNCTION: GY460XF  Im 1424C
-_f_14792:
-	MOV R0, #2H
+_num_invalid:
+	MOV R0, #2H  ; Syntax ERROR
 	RT
 
 ; FUNCTION: GY454XE  Re 14796
 ; FUNCTION: GY455XE  Im 14796
 ; FUNCTION: GY460XF  Im 14250
-_f_14796:
+_num_nop:
 	MOV R0, #0H
 	RT
 
 ; FUNCTION: GY454XE  Re 1479A
 ; FUNCTION: GY455XE  Im 1479A
 ; FUNCTION: GY460XF  Im 14254
-_f_1479A:
+_num_not:
 	PUSH LR
 	PUSH ER6
 	PUSH QR8
@@ -10908,7 +10920,7 @@ _f_1479A:
 ; FUNCTION: GY454XE  Re 147C4
 ; FUNCTION: GY455XE  Im 147C4
 ; FUNCTION: GY460XF  Im 1427E
-_f_147C4:
+_num_neg:
 	PUSH LR
 	PUSH ER6
 	PUSH QR8
@@ -11036,7 +11048,7 @@ _$j_14868:
 ; FUNCTION: GY454XE  Re 148B4
 ; FUNCTION: GY455XE  Im 148B4
 ; FUNCTION: GY460XF  Im 1436E
-_cmplx_rnd:
+_num_cmplx_rnd:
 	PUSH LR
 	ADD BP, #0AH
 	MOV ER0, BP
@@ -11052,7 +11064,7 @@ _$j_148ca:
 ; FUNCTION: GY454XE  Re 148CC
 ; FUNCTION: GY455XE  Im 148CC
 ; FUNCTION: GY460XF  Im 14386
-_cmplx_negate:
+_num_cmplx_negate:
 	PUSH LR
 	ADD ER0, #0AH
 	BL _num_negate
@@ -11066,7 +11078,7 @@ _$j_148de:
 ; FUNCTION: GY454XE  Re 148E0
 ; FUNCTION: GY455XE  Im 148E0
 ; FUNCTION: GY460XF  Im 1439A
-_f_148E0:
+_num_or:
 	PUSH LR
 	PUSH ER6
 	PUSH QR8
@@ -11095,7 +11107,7 @@ _f_148E0:
 ; FUNCTION: GY454XE  Re 1491C
 ; FUNCTION: GY455XE  Im 1491C
 ; FUNCTION: GY460XF  Im 143D6
-_f_1491C:
+_num_xor:
 	PUSH LR
 	PUSH ER6
 	PUSH QR8
@@ -11124,7 +11136,7 @@ _f_1491C:
 ; FUNCTION: GY454XE  Re 14958
 ; FUNCTION: GY455XE  Im 14958
 ; FUNCTION: GY460XF  Im 14412
-_f_14958:
+_num_xnor:
 	PUSH LR
 	PUSH ER6
 	PUSH QR8
@@ -11157,7 +11169,7 @@ _f_14958:
 ; FUNCTION: GY454XE  Re 1499C
 ; FUNCTION: GY455XE  Im 1499C
 ; FUNCTION: GY460XF  Im 14456
-_f_1499C:
+_num_and:
 	PUSH LR
 	PUSH ER6
 	PUSH QR8
@@ -11279,7 +11291,7 @@ _$j_14a76:
 ; FUNCTION: GY454XE  Re 14A7E
 ; FUNCTION: GY455XE  Im 14A7E
 ; FUNCTION: GY460XF  Im 14538
-_num_cmplx_pow:
+_num_pow:
 	PUSH LR
 	CMP R6, #-3CH
 	BNE _$j_14aac
@@ -11369,7 +11381,7 @@ _$j_14b04:
 ; FUNCTION: GY454XE  Re 14B08
 ; FUNCTION: GY455XE  Im 14B08
 ; FUNCTION: GY460XF  Im 145C2
-_cmplx_inverse:
+_num_cmplx_inverse:
 	PUSH LR
 	L R3, 0AH[ER0]
 	BNE _$j_14b16
@@ -11382,7 +11394,7 @@ _$j_14b16:
 ; FUNCTION: GY454XE  Re 14B1C
 ; FUNCTION: GY455XE  Im 14B1C
 ; FUNCTION: GY460XF  Im 145D6
-_cmplx_add:
+_num_cmplx_add:
 	PUSH LR
 	BL _f_14AEC
 	BNE _$j_14b2a
@@ -11395,7 +11407,7 @@ _$j_14b2a:
 ; FUNCTION: GY454XE  Re 14B30
 ; FUNCTION: GY455XE  Im 14B30
 ; FUNCTION: GY460XF  Im 145EA
-_cmplx_sub:
+_num_cmplx_sub:
 	PUSH LR
 	BL _f_14AEC
 	BNE _$j_14b3e
@@ -11408,7 +11420,7 @@ _$j_14b3e:
 ; FUNCTION: GY454XE  Re 14B44
 ; FUNCTION: GY455XE  Im 14B44
 ; FUNCTION: GY460XF  Im 145FE
-_cmplx_mul:
+_num_cmplx_mul:
 	PUSH LR
 	BL _f_14AEC
 	BNE _$j_14b52
@@ -11450,13 +11462,13 @@ _$j_14b52:
 	POP PC
 _$j_14ba0:
 	POP XR0
-	BL _cmplx_square_1
+	BL _num_cmplx_square_1
 	POP PC
 
 ; FUNCTION: GY454XE  Re 14BA8
 ; FUNCTION: GY455XE  Im 14BA8
 ; FUNCTION: GY460XF  Im 14662
-_cmplx_div:
+_num_cmplx_div:
 	PUSH LR
 	BL _f_14AEC
 	BNE _$j_14bb6
@@ -11469,7 +11481,7 @@ _$j_14bb6:
 ; FUNCTION: GY454XE  Re 14BBC
 ; FUNCTION: GY455XE  Im 14BBC
 ; FUNCTION: GY460XF  Im 14676
-_f_14BBC:
+_num_angle:
 	PUSH LR
 	PUSH ER2
 	BL _f_16DCA
@@ -11927,20 +11939,20 @@ _$j_14ed8:
 	BEQ _$j_14f1a
 	CMP R1, #78H
 	BEQ _$j_14f1a
-	CMP R1, #0FH       ; If ID <= 0xE, ban ERROR value
+	CMP R1, #0FH       ; If ID <= 14, ban ERROR value
 	BLT _$j_14f5a
-	CMP R1, #25H       ; If 0x10 <= ID <= 0x25, ban matrix/vector/complex
+	CMP R1, #25H       ; If 15 <= ID <= 37, ban matrix/vector/complex
 	BLE _$j_14f1a
-	CMP R1, #30H       ; If 0x26 <= ID <= 0x2F, skip below check
+	CMP R1, #30H       ; If 38 <= ID <= 47, skip below check
 	BLT _$j_14ef0
-	CMP R1, #5FH       ; If 0x30 <= ID < 0x5F, matrix/vector/complex
+	CMP R1, #5FH       ; If 48 <= ID <= 94, ban matrix/vector/complex
 	BLT _$j_14f1a
 _$j_14ef0:
 	CMP R1, #65H       ; If exponentation, skip ahead
 	BEQ _$j_14f0a
 	CMP R1, #66H       ; If nth root, ban matrix/vector/complex
 	BEQ _$j_14f1a
-	CMP R1, #6EH       ; If >= 0x6E, ban matrix/vector/complex
+	CMP R1, #6EH       ; If ID >= 110, ban matrix/vector/complex
 	BGE _$j_14f1a
 	CMP R1, #6BH       ; If inverse, square, or cube, ban vector
 	BGE _$j_14f1e
@@ -11973,17 +11985,17 @@ _$j_14f26:
 	BEQ _$j_14f42
 	CMP R1, #74H       ; If remainder, skip ahead
 	BEQ _$j_14f42
-	CMP R1, #23H       ; If ID < 0x23, skip further ahead
+	CMP R1, #23H       ; If ID <= 34, skip further ahead
 	BLT _$j_14f62
-	CMP R1, #32H       ; If 0x23 <= ID <= 0x32, skip ahead
+	CMP R1, #32H       ; If 35 <= ID <= 50, skip ahead
 	BLE _$j_14f42
-	CMP R1, #64H       ; If 0x33 <= ID <= 0x64, skip ahead
+	CMP R1, #64H       ; If 51 <= ID <= 99, skip ahead
 	BLT _$j_14f62
-	CMP R1, #66H       ; If ID > 0x66 (exponentation or nth root), skip ahead
+	CMP R1, #66H       ; If ID >= 103, skip ahead
 	BGT _$j_14f62
 _$j_14f42:
-	ADD R5, #-1H       ; Subtract 1 from R5
-	BNE _$j_14f62      ; If result is non-zero, jump ahead
+	ADD R5, #-1H       ; Skip if already done
+	BNE _$j_14f62
 	PUSH R1
 	MOV ER0, BP        ; Copy number at [BP] to [BP+20]
 	ADD ER0, #20
@@ -12028,13 +12040,13 @@ _$j_14f9a:
 	CMP R5, #-1H       ; If R5 = -1, jump ahead
 	BEQ _$j_1502c
 	AND R2, #00001111B ; Extract first nibble of Area 2
-	ADD R1, #-0AH      ; Subtract 10 from operator ID
+	ADD R1, #-10       ; Subtract 10 from operator ID
 	CMP R1, #3H        ; If matrix det(?), jump below
 	BEQ _$j_14fdc
-	CMP R1, #62H       ; If ID < 0x6C, jump further below
+	CMP R1, #62H       ; If ID <= 107, jump further below
 	BLT _$j_14ff4
 	BL _find_zero_bit  ; Find a cleared bit in [8121H]
-	BNE _$j_14fb4      ; If more than 5 bits set, jump below
+	BNE _$j_14fb4      ; If more than 5 bits set, return Stack ERROR
 	B _$j_150ec
 _$j_14fb4:
 	BL _set_bit        ; Set the bit we found earlier
@@ -12053,7 +12065,7 @@ _$j_14fb4:
 	MOV R2, R4         ; Grab old first nibble of Area 2
 	AND R2, #00001111B
 	BL _f_1548E
-	ADD R1, #-5BH      ; Subtract 91 from operator ID
+	ADD R1, #-91       ; Subtract 91 from operator ID
 _$j_14fdc:
 	CMP R2, #4H        ; If first nibble of Area 2 < 4, jump below
 	BLT _$j_15092
@@ -12064,7 +12076,7 @@ _$j_14fe8:
 	CMP R5, #-1H       ; If R5 = -1, jump ahead
 	BEQ _$j_1502c
 	AND R2, #00001111B ; Extract first nibble of Area 2
-	ADD R1, #-0BH      ; Subtract 11 from operator ID
+	ADD R1, #-11       ; Subtract 11 from operator ID
 	BEQ _$j_14fdc      ; If Abs(?), jump below
 	ADD R1, #1H        ; Add 1 to operator ID
 _$j_14ff4:
@@ -12154,41 +12166,41 @@ _$j_15092:
 _$j_1509a:
 	PUSH R6
 	L R6, _mode
-	CMP R1, #17H
-	BLT _$j_150ac
-	CMP R1, #1CH
+	CMP R1, #23    ; If index is not for sin, cos, tan, asin, acos, atan
+	BLT _$j_150ac  ; then set arg2 to [BP+20]
+	CMP R1, #28
 	BGT _$j_150ac
-	MOV R2, #0H
+	MOV R2, #0H    ; Otherwise, ignore it
 	BAL _$j_150b0
 _$j_150ac:
 	MOV ER2, BP
 	ADD ER2, #14H
 _$j_150b0:
-	SLL R1, #1
+	SLL R1, #1     ; Call the corresponding function
 	ADD R4, R1
 	ADDC R5, #0H
 	L ER4, [ER4]
 	MOV ER0, BP
 	BL ER4
-	MOV R1, R6
-	POP R6
+	MOV R1, R6     ; Copy mode to R1
+	POP R6         ; Restore R6
 _$j_150c0:
-	CMP R0, #0H
+	CMP R0, #0H    ; If return value is nonzero, return it as error
 	BNE _$j_150e6
-	L R2, [BP]
+	L R2, [BP]     ; Get the result (part 1) number type
 	AND R2, #11110000B
-	CMP R1, #0C4H
+	CMP R1, #0C4H  ; If we're not in CMPLX mode, skip this part
 	BNE _$j_150dc
-	CMP R2, #80H
+	CMP R2, #80H   ; If real part is a radical, return
 	BEQ _$j_150e6
-	CMP R2, #40H
+	CMP R2, #40H   ; If it's a sexagesimal, do extra processing
 	BEQ _$j_150e0
 	MOV ER0, BP
-	BL _f_17202
+	BL _f_17202    ; Otherwise, do extra processing and return
 	BAL _$j_150e6
 _$j_150dc:
-	CMP R2, #60H
-	BGE _$j_150e6
+	CMP R2, #60H   ; If result is matrix, radical or vector, return
+	BGE _$j_150e6  ; Otherwise do extra processing
 _$j_150e0:
 	MOV ER0, BP
 	BL _f_1B238
@@ -12196,52 +12208,52 @@ _$j_150e6:
 	MOV R2, R0
 	B _$j_14ed2
 _$j_150ec:
-	MOV R2, #7H
+	MOV R2, #7H    ; Stack ERROR
 	POP PC
 _$j_150f0:
 	MOV R2, #3H
 	B _$j_14ed2
 _$j_150f6:         ; == Set index based on token ==
 	L R0, _mode
-	CMP R1, #77H   ; RanInt#( => index 38
+	CMP R1, #77H   ; ID 119 (RanInt#) => index 30
 	BEQ _$j_15158
-	CMP R1, #78H   ; <ID 120> => index 92
+	CMP R1, #78H   ; ID 120 => index 84
 	BEQ _$j_1515c
-	CMP R1, #76H   ; >Conv => see below
+	CMP R1, #76H   ; ID 118 (>Conv) => conversion index fetched, value stored in a buffer
 	BEQ _$j_15114
-	CMP R1, #37H   ; IDs 0-54 => see below
+	CMP R1, #37H   ; IDs 3-54 => index 0-51
 	BLT _$j_15122
-	CMP R1, #74H   ; ÷R => see below
+	CMP R1, #74H   ; ID 116 (÷R) => index 83
 	BEQ _$j_1511e
-	CMP R1, #5FH   ; IDs >= 95 => see below
+	CMP R1, #5FH   ; IDs 95-114 => index 52-71
 	BGE _$j_15120
-	ADD R1, #55   ; IDs 55-94 => subtracted by 55 to get conversion index
+	ADD R1, #55    ; IDs 55-94 => subtracted by 55 to get conversion index
 _$j_15114:
-	PUSH R0
+	PUSH R0        ; Push mode byte to stack
 	BL _num_conv
-	POP R1
-	BAL _$j_150c0
+	POP R1         ; Pop mode byte, store in R1
+	BAL _$j_150c0  ; Jump above
 _$j_1511e:
 	ADD R1, #0AH
 _$j_15120:
 	ADD R1, #-28H
 _$j_15122:
 	ADD R1, #-3H
-	CMP R0, #-3CH
-	BNE _$j_15152
-	CMP R1, #43H
+	CMP R0, #0C4H  ; If not CMPLX mode, skip
+	BNE _$j_15152  ; === Set CMPLX index basd on regular index ===
+	CMP R1, #43H   ; Indices >= 67 => No change
 	BGE _$j_15152
-	CMP R1, #40H
+	CMP R1, #40H   ; Indices 64-66 => CMPLX 80-82
 	BGE _$j_15150
-	CMP R1, #34H
+	CMP R1, #34H   ; Index 52 (negative sign) => CMPLX 79
 	BEQ _$j_1514e
-	CMP R1, #2BH
+	CMP R1, #2BH   ; Indices 44-51, 53-63 => No change
 	BGT _$j_15152
-	CMP R1, #28H
+	CMP R1, #28H   ; Indices 40-43 => CMPLX 75-78
 	BGE _$j_1514c
-	CMP R1, #14H
+	CMP R1, #14H   ; Index 20 => CMPLX 74
 	BEQ _$j_1514a
-	CMP R1, #9H
+	CMP R1, #9H    ; Index 8-9 => CMPLX 72-73
 	BEQ _$j_15148
 	CMP R1, #8H
 	BNE _$j_15152
@@ -12256,7 +12268,7 @@ _$j_1514e:
 _$j_15150:
 	ADD R1, #10H
 _$j_15152:
-	MOV R4, #BYTE1 (_operator_handlers+32)
+	MOV R4, #BYTE1 (_operator_handlers+32)  ; First 16 pointers skipped
 	MOV R5, #BYTE2 (_operator_handlers+32)
 	BAL _$j_1509a
 _$j_15158:
@@ -14356,8 +14368,8 @@ PUBLIC _f_143EA
 PUBLIC _get_const_token
 PUBLIC _get_conv_token
 PUBLIC _num_to_str_base_n
-PUBLIC _f_144F4
-PUBLIC _f_14516
+PUBLIC _is_op_postfix_sto
+PUBLIC _is_func_add_ans
 PUBLIC _f_14532
 PUBLIC _num_to_str_std_lineo
 PUBLIC _f_149D8
@@ -14417,16 +14429,16 @@ EXTRN CODE	: _num_inverse
 EXTRN CODE	: _num_cube
 EXTRN CODE	: _f_16DCA
 EXTRN CODE	: _f_16E44
-EXTRN CODE	: _cmplx_square_1
+EXTRN CODE	: _num_cmplx_square_1
 EXTRN CODE	: _f_16EE2
 EXTRN CODE	: _f_16F3A
 EXTRN CODE	: _f_16F5E
 EXTRN CODE	: _f_17110
-EXTRN CODE	: _cmplx_cube
-EXTRN CODE	: _cmplx_square
+EXTRN CODE	: _num_cmplx_cube
+EXTRN CODE	: _num_cmplx_square
 EXTRN CODE	: _f_17186
-EXTRN CODE	: _f_171D2
-EXTRN CODE	: _f_171E6
+EXTRN CODE	: _num_conjg
+EXTRN CODE	: _num_arg
 EXTRN CODE	: _f_17202
 EXTRN CODE	: _f_1724A
 EXTRN CODE	: _bcd_to_byte
@@ -14440,7 +14452,7 @@ EXTRN CODE	: _num_log
 EXTRN CODE	: _num_combi
 EXTRN CODE	: _num_permu
 EXTRN CODE	: _f_1A52A
-EXTRN CODE	: _f_1A5A4
+EXTRN CODE	: _num_remainder
 EXTRN CODE	: _num_factorial
 EXTRN CODE	: _f_1A5E2
 EXTRN CODE	: _f_1A5F6
@@ -14479,8 +14491,8 @@ EXTRN CODE	: _f_1ACFE
 EXTRN CODE	: _f_1AD86
 EXTRN CODE	: _f_1ADF0
 EXTRN CODE	: _f_1AE06
-EXTRN CODE	: _cmplx_abs
-EXTRN CODE	: _f_1AF44
+EXTRN CODE	: _num_cmplx_abs
+EXTRN CODE	: _num_cmplx_sqrt
 EXTRN CODE	: _f_1AFB8
 EXTRN CODE	: _f_1AFD8
 EXTRN CODE	: _num_sign

@@ -36,6 +36,8 @@ ENABLE_SOLVE=1
 ENABLE_CONST=1
 // Enable unit conversions.
 ENABLE_CONV=1
+// Enable remainder (÷R) function.
+ENABLE_REMAINDER=1
 
 // ==== Modes ====
 ENABLE_BASE_N=1

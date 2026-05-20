@@ -261,6 +261,7 @@ enum keycode {
 	K_FCTRIAL	= 0x57,  // Factorial (x!)
 	K_VAR_X		= 0x58,  // Variable X
 	K_VAR_Y		= 0x59,  // Variable Y
+	K_REMAINDER	= 0x5F,  // Remainder (÷R)
 	K_NEGATIVE	= 0x60,  // Negative sign (-)
 	K_LOG		= 0x68,  // log₁₀ n
 	K_POL		= 0x6C,  // Pol( function

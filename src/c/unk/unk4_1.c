@@ -40,7 +40,7 @@ static void print_result_0(void);
 static char f_0B9C8(keyfunc_struct *a);
 static void f_0BA28(keyfunc_struct *a);
 static void f_0BA50(char m);
-static void f_0BAA8(char *input);
+static void try_insert_ans(char *input);
 static char is_mathi_mode(void);
 static char f_0BAF2(char **a);
 static char *find_replay_entry(char *a);
@@ -199,7 +199,7 @@ const char keycodes_alpha[64] = {
 	NULL,		K_CONV_N,	NULL,		K_DEL,		K_AC,		NULL,		K_EULER,	NULL,
 	K_RCL,		NULL,		NULL,		K_VAR_X,	K_VAR_Y,	K_VAR_M,	K_RANINT,	NULL,
 	K_VAR_A,	K_VAR_B,	K_VAR_C,	K_VAR_D,	K_VAR_E,	K_VAR_F,	NULL,		NULL,
-	NULL,		K_RDEC,		NULL,		NULL,		NULL,		NULL,		NULL,		NULL,
+	K_REMAINDER,K_RDEC,		NULL,		NULL,		NULL,		NULL,		NULL,		NULL,
 	K_EQUALS,	K_COLON,	K_LEFT,		K_DOWN,		NULL,		NULL,		NULL,		NULL,
 	K_SHIFT,	K_ALPHA,	K_UP,		K_RIGHT,	K_MODE,		K_COLON,	K_EQUALS,	NULL
 };
@@ -942,7 +942,7 @@ void set_modifiers(char keycode) {
 // FUNCTION: GY455XE  Im 0BF46
 // FUNCTION: GY460XF  Im 0BA0C
 char is_modifier_keycode(char keycode) {
-	if (0xe8 <= keycode && keycode <= 0xec) return 1;
+	if (K_ALPHA <= keycode && keycode <= K_INS) return 1;
 	return 0;
 }
 
@@ -977,7 +977,7 @@ void f_0B67E(void) {
 	if (d_080FE == 1 && force_nochar == 1) {
 		if (last_key_keycode == K_DMS) {
 			// Original version jumps to set_char_keycode with B instruction. Currently there is no known way to replicate this in CCU8
-			set_char_keycode(0x5c); // Degs-Mins-Secs
+			set_char_keycode(0x5c);  // Degs-Mins-Secs
 			return;
 		}
 		if ((K_DMS_R <= last_key_keycode && last_key_keycode <= K_FMT_FRAC) || last_key_keycode == K_FACT) last_key_keycode = 0;
@@ -1457,17 +1457,17 @@ char show_error(char idx) {
 // FUNCTION: GY455XE  Im 0C5C6
 // FUNCTION: GY460XF  Im 0C0BC
 char diag_initloop(void) {
-	char v0;
-	int v1;
+	char allow;
+	int tm;
 	scancode v2;
 	scancode v3;
 
-	v0 = 0;
-	v1 = 2381;
+	allow = 0;
+	tm = 2381;
 	v2.b.ki = 0x80;
 	v2.b.ko = 1;
 j_0b81c:
-	if (v1--) {
+	if (tm--) {
 		delay(20);
 		if (!check_key_kio(&v2)) {
 j_0b850:
@@ -1476,7 +1476,7 @@ j_0b850:
 			delay(1);
 			if (get_key_kio(&v3) && check_key_kio2(&v3)) {
 				if (v3.b.ki == 4 && v3.b.ko == 4) {
-					v0 = 1;
+					allow = 1;
 					goto j_0b838;
 				} else if (v3.b.ki != 4 || v3.b.ko != 0x10) {
 					v2.kio = v3.kio;
@@ -1487,7 +1487,7 @@ j_0b850:
 		set_all_kimask();
 		set_all_ko();
 j_0b898:
-		if (!--v1) {
+		if (!--tm) {
 			clr_all_ko();
 			clr_all_kimask();
 			goto j_0b838;
@@ -1499,23 +1499,23 @@ j_0b898:
 
 j_0b838:
 	clr_all_ko();
-	return v0;
+	return allow;
 }
 
 // FUNCTION: GY454XE  Re 0B8B8
 // FUNCTION: GY455XE  Im 0C67A
 // FUNCTION: GY460XF  Im 0C170
 void f_0B8B8(char a) {
-	char v0;
+	char clear_input;
 
-	v0 = 1;
-	if (a & (1 << 7)) v0 = 0;
+	clear_input = 1;
+	if (a & (1 << 7)) clear_input = 0;
 
 	a &= 0xf;
 	d_08120 = 0;
 	d_080FE = 1;
 	result_template = 0;
-	if (v0) {
+	if (clear_input) {
 		memzero(input_area, 100);
 		cursor_pos_byte = 0;
 	}
@@ -1629,10 +1629,10 @@ static void f_0BA50(char m) {
 		tok = last_key_keycode;
 		// Fraction/nth root
 		if (is_mathi() && (tok == 0xae || tok == 0x9f)) tok = 0;
-		if (f_144F4(tok)) {
+		if (is_op_postfix_sto(tok)) {
 			tok = K_ANS;
-			if (m == 6) tok = 0xcb;  // MatAns
-			else if (m == 7) tok = 0xcf;  // VctAns
+			if (m == MODE_MATRIX) tok = 0xcb;  // MatAns
+			else if (m == MODE_VECTOR) tok = 0xcf;  // VctAns
 			insert_token(tok, 0);
 		}
 	}
@@ -1642,9 +1642,9 @@ static void f_0BA50(char m) {
 // FUNCTION: GY454XE  Re 0BAA8
 // FUNCTION: GY455XE  Im 0C86A
 // FUNCTION: GY460XF  Im 0C37C
-static void f_0BAA8(char *input) {
-	if (table_mode == TABLE_NONE && smart_strlen(input) == 1 && f_14516(input[0])) {
-		input[1] = 0x8b;  // Ans
+static void try_insert_ans(char *input) {
+	if (table_mode == TABLE_NONE && smart_strlen(input) == 1 && is_func_add_ans(input[0])) {
+		input[1] = K_ANS;
 		input[2] = '\0';
 	}
 	return;
@@ -1669,7 +1669,7 @@ static char f_0BAF2(char **a) {
 	if (!f_02CB6()) {
 		if (d_080FE & (1 << 6)) input_area_ptr = d_0812A;
 		else {
-			f_0BAA8(*a);
+			try_insert_ans(*a);
 			if (!(mode & (1 << 7)) && (table_mode == TABLE_NONE || table_mode & (1 << 7))) smart_strcpy(cache_area, input_area);
 		}
 	}
@@ -1688,7 +1688,7 @@ char f_0BB42(char **a) {
 	*a = get_result_str_ptr();
 	if (table_mode == TABLE_RANGE && d_080FD == 4) smart_strcpy(v1, cache_area);
 	else if (!(d_080FE & (1 << 6))) {
-		f_0BAA8(v1);
+		try_insert_ans(v1);
 #if ENABLE_VERIF == 1
 		verif_try_insert_eq0(v1);
 #endif
@@ -2045,7 +2045,7 @@ char f_0C1D4(keyfunc_struct *a) {
 
 	if (f_02C76() || get_result_disp_fmt() || d_0812C) return 4;
 	num_cpy_im(loc_m20, a->result);
-	if (num_sign(&loc_m20[10]) == NUM_SIGN_ZERO || !cmplx_abs(loc_m20)) return 4;
+	if (num_sign(&loc_m20[10]) == NUM_SIGN_ZERO || !num_cmplx_abs(loc_m20)) return 4;
 	return f_0C148(a);
 }
 

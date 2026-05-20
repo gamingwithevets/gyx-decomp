@@ -12,7 +12,8 @@
 // FUNCTION: GY460XF  Im 099BE
 // FUNCTION: GY465XG  Im 095AA
 void main(void) {
-	char i, j;
+	signed char need_render;
+	char fetch_next;
 
 	memset(&stack_start, 90, 800);
 	f_046E0();
@@ -35,9 +36,9 @@ void main(void) {
 	else if (mode == MODE_RATIO) table_mode = TABLE_RATIO;
 	f_112EA();
 
-	j = 0;
+	fetch_next = 0;
 	while (1) {
-		if (j) {
+		if (fetch_next) {
 			set_scr_normal();
 			set_keycode(getkeycode(1));
 			if (last_key_keycode == K_MODE) screen_state = 1;
@@ -55,52 +56,52 @@ void main(void) {
 			}
 			else screen_state = 0;
 		}
-		j = 1;
+		fetch_next = 1;
 		if (screen_state) {
 			switch (screen_state) {
 				case 1:
 					d_08126 = 0;
-					i = mode_menu();
+					need_render = mode_menu();
 					break;
 				case 2:
 					d_08126 = 0;
-					if (i = setup_menu()) {
+					if (need_render = setup_menu()) {
 						f_044D2();
 						if (table_mode & (1 << 4)) f_044B6();
 					}
 					break;
 				case 3:
-					i = f_09014();
-					if ((signed char)i > 0) force_nochar = 0;
+					need_render = f_09014();
+					if (need_render > 0) force_nochar = 0;
 					break;
 			}
-			if (!i) render();
-			else j = 0;
+			if (!need_render) render();
+			else fetch_next = 0;
 			screen_state = 0;
 			continue;
 		}
-		if (f_0B6B6()) j = f_09962(0);
+		if (f_0B6B6()) fetch_next = f_09962(0);
 		else {
 			char tm = table_mode;
 			if (tm != TABLE_EQN && tm != TABLE_INEQ && tm != TABLE_RATIO && last_key_keycode == K_AC) {
 				table_mode = TABLE_NONE;
 				f_0B8B8(1);
-				j = 0;
+				fetch_next = 0;
 			} else if (tm == TABLE_STAT_TABLE) {
 				table_stat_handler();
-				j = 1;
+				fetch_next = 1;
 			}
-			else if (tm == TABLE_MATRIX) j = table_mat_handler(i);
-			else if (tm == TABLE_VECTOR) j = table_vct_handler(i);
-			else if (tm == TABLE_EQN) j = table_eqn_handler(i);
-			else if (tm == TABLE_RANGE) j = table_range_handler(i);
-			else if (tm == TABLE_CALC) j = calc_solve_handler(i);
-			else if (tm == TABLE_SOLVE) j = calc_solve_handler(i);
+			else if (tm == TABLE_MATRIX) fetch_next = table_mat_handler(need_render);
+			else if (tm == TABLE_VECTOR) fetch_next = table_vct_handler(need_render);
+			else if (tm == TABLE_EQN) fetch_next = table_eqn_handler(need_render);
+			else if (tm == TABLE_RANGE) fetch_next = table_range_handler(need_render);
+			else if (tm == TABLE_CALC) fetch_next = calc_solve_handler(need_render);
+			else if (tm == TABLE_SOLVE) fetch_next = calc_solve_handler(need_render);
 #if ENABLE_INEQ == 1
-			else if (tm == TABLE_INEQ) j = table_ineq_handler(i);
+			else if (tm == TABLE_INEQ) fetch_next = table_ineq_handler(need_render);
 #endif
 #if ENABLE_RATIO == 1
-			else if (tm == TABLE_RATIO) j = table_ratio_handler(i);
+			else if (tm == TABLE_RATIO) fetch_next = table_ratio_handler(need_render);
 #endif
 		}
 		render();
