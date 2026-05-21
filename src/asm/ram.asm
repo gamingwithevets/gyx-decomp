@@ -1142,6 +1142,7 @@ _screen_buffer_y1_neg EQU -(OFFSET _screen_buffer + 12)
 PUBLIC _screen_buffer_y1_neg
 
 PUBLIC _ram_start
+PUBLIC _reg0
 PUBLIC _d_08000
 PUBLIC _d_08002
 PUBLIC _d_08004
