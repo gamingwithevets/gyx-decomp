@@ -3118,7 +3118,7 @@ _$j_17540:
 	ST ER8, [EA+]
 	BAL _$j_17558
 _$j_17554:
-	BL _f_17644
+	BL _num_pi_val
 _$j_17558:
 	BL _mv_reg4_reg0
 	BL _mv_reg5_reg0
@@ -3206,8 +3206,8 @@ _$j_17624:
 ; FUNCTION: GY454XE  Re 17626
 ; FUNCTION: GY455XE  Im 17626
 ; FUNCTION: GY460XF  Im 16D82
-_f_17626:
-	MOV R9, #2H
+_num_euler_val:
+	MOV R9, #2H    ; 2.71828182845904
 	MOV R8, #71H
 	MOV R7, #82H
 	MOV R6, #81H
@@ -3225,8 +3225,8 @@ _f_17626:
 ; FUNCTION: GY454XE  Re 17644
 ; FUNCTION: GY455XE  Im 17644
 ; FUNCTION: GY460XF  Im 16DA0
-_f_17644:
-	MOV R9, #3H
+_num_pi_val:
+	MOV R9, #3H    ; 3.141592653898
 	MOV R8, #14H
 	MOV R7, #15H
 	MOV R6, #92H
@@ -3268,7 +3268,7 @@ _f_16CD4_461E:
 	BL _f_1768A
 	BGE _$j_06d98_461e
 	L ER0, _reg1
-	CMP R1, #05H
+	CMP R1, #5H
 	BGE _$j_06d98_461e
 	BL _f_1768A
 	BGE _$j_06d98_461e
@@ -9489,14 +9489,14 @@ _$j_1a786:
 	BL _set_reg1_200
 	BL _num_div_r
 	BL _mv_reg1_reg0
-	BL _f_17644
+	BL _num_pi_val
 	BL _num_mul_r
 	BAL _$j_1a7e6
 _$j_1a7a2:
 	BL _set_reg1_180
 	BL _num_div_r
 	BL _mv_reg1_reg0
-	BL _f_17644
+	BL _num_pi_val
 	BL _num_mul_r
 	BAL _$j_1a7e6
 _$j_1a7b8:
@@ -9511,7 +9511,7 @@ _$j_1a7c8:
 _$j_1a7cc:
 	BL _num_mul_r
 	BL _mv_reg1_reg0
-	BL _f_17644
+	BL _num_pi_val
 	BL _f_19BD6
 	BAL _$j_1a7e6
 _$j_1a7de:
@@ -11261,26 +11261,26 @@ _$j_1b48e:
 ; FUNCTION: GY454XE  Re 1B4A0
 ; FUNCTION: GY455XE  Im 1B4A0
 ; FUNCTION: GY460XF  Im 1ABFC
-_f_1B4A0:
+_num_euler:
 	PUSH LR
 	LEA _arg0_ref
 	ST XR0, [EA+]
 	PUSH XR4
 	PUSH QR8
-	BL _f_17626
+	BL _num_euler_val
 	BL _st_reg0
 	BAL _$j_1b4ca
 
 ; FUNCTION: GY454XE  Re 1B4B6
 ; FUNCTION: GY455XE  Im 1B4B6
 ; FUNCTION: GY460XF  Im 1AC12
-_f_1B4B6:
+_num_pi:
 	PUSH LR
 	LEA _arg0_ref
 	ST XR0, [EA+]
 	PUSH XR4
 	PUSH QR8
-	BL _f_17644
+	BL _num_pi_val
 	BL _st_reg0
 _$j_1b4ca:
 	POP QR8
@@ -11466,8 +11466,8 @@ PUBLIC _num_frombyte
 PUBLIC _num_to_byte
 PUBLIC _num_cpy_im
 PUBLIC _num_cpy
-PUBLIC _f_1B4A0
-PUBLIC _f_1B4B6
+PUBLIC _num_euler
+PUBLIC _num_pi
 PUBLIC _f_1B4D0
 PUBLIC _invalid_var
 

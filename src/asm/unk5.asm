@@ -8,7 +8,6 @@ $$NTABunk5_0 SEGMENT TABLE 2H #0
 $$NTABunk5_1 SEGMENT TABLE 2H #0
 $$NTABunk5_2 SEGMENT TABLE 2H #0
 $$NTABunk5_3 SEGMENT TABLE 2H #0
-$$NTABunk5_4 SEGMENT TABLE 2H #0
 $$NCODunk5 SEGMENT CODE 2H #1
 
 RSEG $$NTABunk5_0
@@ -390,7 +389,7 @@ _token_types_args:
 ;     10ⁿ, √, sin, cos, tan, ln, ³√, sin⁻¹, cos⁻¹, tan⁻¹, Rnd, det, Trn, RanInt#, arg, P, Q, R
 ;  2  '+', '-', 0x2F, '=', '×', '÷', xⁿ, ÷R, and, or, xor, xnor, Dot Product, ⁿ√, fraction, angle, nPr, nCr
 ;  3  '%', ')', >a+bi, >r∠θ, Factorial, DMS, x̂₁, x̂, ŷ, x̂₂, x², x³, x⁻¹, °, ʳ, ᵍ, >Conv, >t, All conversion characters
-;  4  '.', 0-9, x10, Recurring decimal, MathIO characters
+;  4  '.', 0-9, x10, Recurring decimal, hex A-F/MathIO characters
 ;  5  A, B, C, D, E, F, M, X, Y, Ans, 0xA6, 0xA7
 ;  6  All constants, ∑x², ∑x, n, ∑y², ∑y, ∑xy, ∑x³, ∑x²y, ∑x⁴, minX, maxX, minY, maxY, i, e, pi, x̄, ȳ, Ran#, ᴀ, ʙ, ᴄ, r, σx, sx, σy, sy
 ;  7  MatA, MatB, MatC, MatAns, VctA, VctB, VctC, VctAns
@@ -514,37 +513,35 @@ _num_consts:
 	DB 01H, 01H, 32H, 50H, 00H, 00H, 00H, 00H, 05H, 01H  ; atm | 101325
 ENDIF
 
-RSEG $$NTABunk5_2
-
 ; DATA: GY454XE  Re 019A8
 ; DATA: GY455XE  Im 019A8
 ; DATA: GY460XF  Im 0188A
-_jmp_019a8:
-	DW _f_1B4A0
- 	DW _f_1B4B6
-	DW _f_12FF4
-	DW _f_13024
-	DW _f_12EE4
-	DW _f_12F94
-	DW _f_12FC4
-	DW _f_12E68
-	DW _f_12E32
-	DW _f_12DD2
-	DW _f_12E02
-	DW _f_12F66
-	DW _f_12F50
-	DW _f_12F2E
-	DW _f_12F18
-	DW _f_12EAE
-	DW _f_12E98
-	DW _f_12D5A
-	DW _f_12D1E
-	DW _f_12DA0
-	DW _f_12CE0
-	DW _f_1309C
-	DW _f_13086
-	DW _f_13070
-	DW _f_1305A
+_num_const_funcs:
+	DW _num_euler
+ 	DW _num_pi
+	DW _num_stat_sum_xsq
+	DW _num_stat_sum_x
+	DW _num_stat_n
+	DW _num_stat_sum_ysq
+	DW _num_stat_sum_y
+	DW _num_stat_sum_xy
+	DW _num_stat_sum_xcb
+	DW _num_stat_sum_xsq_y
+	DW _num_stat_sum_x_pow4
+	DW _num_stat_minx
+	DW _num_stat_maxx
+	DW _num_stat_miny
+	DW _num_stat_maxy
+	DW _num_stat_xavg
+	DW _num_stat_yavg
+	DW _num_stat_a
+	DW _num_stat_b
+	DW _num_stat_c
+	DW _num_stat_r
+	DW _num_stat_sd_ppl_x
+	DW _num_stat_sd_smp_x
+	DW _num_stat_sd_ppl_y
+	DW _num_stat_sd_smp_y
 	DW _num_random
 
 IF ENABLE_CONV == 1
@@ -748,7 +745,7 @@ _num_tan_consts:
 	DB 80H, 00H, 00H, 01H, 00H, 03H, 01H, 01H, 01H, 00H  ; -tan(60°) | -sqrt(3)
 	DB 80H, 01H, 02H, 01H, 00H, 03H, 01H, 01H, 01H, 01H  ; -tan(75°) | -2 - sqrt(3)
 
-RSEG $$NTABunk5_3
+RSEG $$NTABunk5_2
 
 ; DATA: GY454XE  Re 01D3E
 ; DATA: GY455XE  Im 01D3E
@@ -802,7 +799,7 @@ _num_normal_cdf:
 	DB 01H, 82H, 12H, 55H, 97H, 80H, 00H, 00H, 00H, 06H  ; a4 = -1.821255978
 	DB 01H, 33H, 02H, 74H, 42H, 90H, 00H, 00H, 00H, 01H  ; a5 =  1.330274429
 
-RSEG $$NTABunk5_4
+RSEG $$NTABunk5_3
 
 ; DATA: GY454XE  Re 04CDE
 ; DATA: GY455XE  Im 04DEC
@@ -2284,7 +2281,7 @@ _$j_10c44:
 	BGE _$j_10cbc
 _$j_10c4c:
 	MOV ER0, FP
-	BL _f_1B4B6
+	BL _num_pi
 	MOV ER0, BP
 	MOV ER2, FP
 	BL _f_1A44C
@@ -3465,7 +3462,7 @@ _$j_113ea:
 	MOV ER0, ER10
 	BL _f_1A438
 	MOV ER0, BP
-	BL _f_1B4B6
+	BL _num_pi
 	MOV ER2, ER4
 	MOV ER0, BP
 	BL _f_1A438
@@ -6482,7 +6479,7 @@ _num_stat_yest:
 ; FUNCTION: GY454XE  Re 12CE0
 ; FUNCTION: GY455XE  Im 12CE0
 ; FUNCTION: GY460XF  Im 1237A
-_f_12CE0:
+_num_stat_r:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6515,7 +6512,7 @@ _f_12CE0:
 ; FUNCTION: GY454XE  Re 12D1E
 ; FUNCTION: GY455XE  Im 12D1E
 ; FUNCTION: GY460XF  Im 123B8
-_f_12D1E:
+_num_stat_b:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6547,7 +6544,7 @@ _$j_12d3e:
 ; FUNCTION: GY454XE  Re 12D5A
 ; FUNCTION: GY455XE  Im 12D5A
 ; FUNCTION: GY460XF  Im 123F4
-_f_12D5A:
+_num_stat_a:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6584,7 +6581,7 @@ _$j_12d98:
 ; FUNCTION: GY454XE  Re 12DA0
 ; FUNCTION: GY455XE  Im 12DA0
 ; FUNCTION: GY460XF  Im 1243A
-_f_12DA0:
+_num_stat_c:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6610,7 +6607,7 @@ _f_12DA0:
 ; FUNCTION: GY454XE  Re 12DD2
 ; FUNCTION: GY455XE  Im 12DD2
 ; FUNCTION: GY460XF  Im 1246C
-_f_12DD2:
+_num_stat_sum_xsq_y:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6636,7 +6633,7 @@ _f_12DD2:
 ; FUNCTION: GY454XE  Re 12E02
 ; FUNCTION: GY455XE  Im 12E02
 ; FUNCTION: GY460XF  Im 1249C
-_f_12E02:
+_num_stat_sum_x_pow4:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6662,7 +6659,7 @@ _f_12E02:
 ; FUNCTION: GY454XE  Re 12E32
 ; FUNCTION: GY455XE  Im 12E32
 ; FUNCTION: GY460XF  Im 124CC
-_f_12E32:
+_num_stat_sum_xcb:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6692,7 +6689,7 @@ _$j_12e60:
 ; FUNCTION: GY454XE  Re 12E68
 ; FUNCTION: GY455XE  Im 12E68
 ; FUNCTION: GY460XF  Im 12502
-_f_12E68:
+_num_stat_sum_xy:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6718,7 +6715,7 @@ _f_12E68:
 ; FUNCTION: GY454XE  Re 12E98
 ; FUNCTION: GY455XE  Im 12E98
 ; FUNCTION: GY460XF  Im 12532
-_f_12E98:
+_num_stat_yavg:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6733,7 +6730,7 @@ _f_12E98:
 ; FUNCTION: GY454XE  Re 12EAE
 ; FUNCTION: GY455XE  Im 12EAE
 ; FUNCTION: GY460XF  Im 12548
-_f_12EAE:
+_num_stat_xavg:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6763,7 +6760,7 @@ _$j_12ec2:
 ; FUNCTION: GY454XE  Re 12EE4
 ; FUNCTION: GY455XE  Im 12EE4
 ; FUNCTION: GY460XF  Im 1257E
-_f_12EE4:
+_num_stat_n:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6791,7 +6788,7 @@ _f_12EE4:
 ; FUNCTION: GY454XE  Re 12F18
 ; FUNCTION: GY455XE  Im 12F18
 ; FUNCTION: GY460XF  Im 125B2
-_f_12F18:
+_num_stat_maxy:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6806,7 +6803,7 @@ _f_12F18:
 ; FUNCTION: GY454XE  Re 12F2E
 ; FUNCTION: GY455XE  Im 12F2E
 ; FUNCTION: GY460XF  Im 125C8
-_f_12F2E:
+_num_stat_miny:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6827,7 +6824,7 @@ _$j_12f42:
 ; FUNCTION: GY454XE  Re 12F50
 ; FUNCTION: GY455XE  Im 12F50
 ; FUNCTION: GY460XF  Im 125EA
-_f_12F50:
+_num_stat_maxx:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6842,7 +6839,7 @@ _f_12F50:
 ; FUNCTION: GY454XE  Re 12F66
 ; FUNCTION: GY455XE  Im 12F66
 ; FUNCTION: GY460XF  Im 12600
-_f_12F66:
+_num_stat_minx:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6869,7 +6866,7 @@ _$j_12f86:
 ; FUNCTION: GY454XE  Re 12F94
 ; FUNCTION: GY455XE  Im 12F94
 ; FUNCTION: GY460XF  Im 1262E
-_f_12F94:
+_num_stat_sum_ysq:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6895,7 +6892,7 @@ _f_12F94:
 ; FUNCTION: GY454XE  Re 12FC4
 ; FUNCTION: GY455XE  Im 12FC4
 ; FUNCTION: GY460XF  Im 1265E
-_f_12FC4:
+_num_stat_sum_y:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6921,7 +6918,7 @@ _f_12FC4:
 ; FUNCTION: GY454XE  Re 12FF4
 ; FUNCTION: GY455XE  Im 12FF4
 ; FUNCTION: GY460XF  Im 1268E
-_f_12FF4:
+_num_stat_sum_xsq:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6948,7 +6945,7 @@ _$j_13008:
 ; FUNCTION: GY454XE  Re 13024
 ; FUNCTION: GY455XE  Im 13024
 ; FUNCTION: GY460XF  Im 126BE
-_f_13024:
+_num_stat_sum_x:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6979,7 +6976,7 @@ _$j_13052:
 ; FUNCTION: GY454XE  Re 1305A
 ; FUNCTION: GY455XE  Im 1305A
 ; FUNCTION: GY460XF  Im 126F4
-_f_1305A:
+_num_stat_sd_smp_y:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -6994,7 +6991,7 @@ _f_1305A:
 ; FUNCTION: GY454XE  Re 13070
 ; FUNCTION: GY455XE  Im 13070
 ; FUNCTION: GY460XF  Im 1270A
-_f_13070:
+_num_stat_sd_ppl_y:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -7009,7 +7006,7 @@ _f_13070:
 ; FUNCTION: GY454XE  Re 13086
 ; FUNCTION: GY455XE  Im 13086
 ; FUNCTION: GY460XF  Im 12720
-_f_13086:
+_num_stat_sd_smp_x:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -7024,7 +7021,7 @@ _f_13086:
 ; FUNCTION: GY454XE  Re 1309C
 ; FUNCTION: GY455XE  Im 1309C
 ; FUNCTION: GY460XF  Im 12736
-_f_1309C:
+_num_stat_sd_ppl_x:
 	PUSH LR
 	PUSH QR8
 	MOV FP, SP
@@ -10081,7 +10078,7 @@ _$j_14250:
 	MOV ER0, ER6
 	ADD ER0, #14H
 	MOV BP, ER0
-	BL _f_1B4B6
+	BL _num_pi
 	BL _num_mul_er12_2
 	BL _f_1418E
 	MOV ER0, ER4
@@ -10111,7 +10108,7 @@ _$j_14298:
 	CMP R0, #0H
 	BEQ _$j_142c4
 	MOV ER0, ER4
-	BL _f_1B4B6
+	BL _num_pi
 	MOV ER0, ER4
 	BL _f_14182
 	MOV ER0, ER4
@@ -12936,7 +12933,7 @@ _num_cpy_cmplx:
 ; FUNCTION: GY454XE  Re 15544
 ; FUNCTION: GY455XE  Im 15544
 ; FUNCTION: GY460XF  Im 14FFE
-_f_15544:
+_is_num_mat_vct_cmplx:
 	MOV R0, #7H
 
 ; Check if out number is of a banned type.
@@ -12945,11 +12942,13 @@ _f_15544:
 ; 2. Value of R0:
 ;   a. If R0 is -1, all numbers are allowed.
 ;   b. If R0 is 0, all numbers with type < 6 (incl. float and fraction) and radical are banned.
+;      (effectively, only matrix and vector pointers are allowed)
 ;   c. If not, use R0 for ban flags:
 ;     + Bit 0: vector pointer
 ;     + Bit 1: matrix pointer
 ;     + Bit 2: fraction/radical/float with complex imaginary part (CMPLX mode)
-; Result is stored in carry bit (set = banned, cleared = allowed)
+; Result is stored in carry bit (set = banned, cleared = allowed).
+; If banned, Math ERROR is returned as well.
 ; FUNCTION: GY454XE  Re 15546
 ; FUNCTION: GY455XE  Im 15546
 ; FUNCTION: GY460XF  Im 15000
@@ -13150,7 +13149,7 @@ _$j_156a2:
 	MOV R2, #2H              ; Syntax ERROR
 	POP PC
 _$j_156a6:
-	BL _num_parse_2f         ; Parse token 0X2F
+	BL _num_parse_2f         ; Parse token 0x2F
 	BEQ _$j_156ae            ; If not successful, return the error code
 	POP PC
 _$j_156ae:
@@ -13266,13 +13265,13 @@ _$j_15770:
 	BNE _$j_15746  ; If bit was already set, return Syntax ERROR
 _$j_15780:
 	BL _f_152D8
-	CMP R2, #0H    ; If return value is nonzero, return Syntax ERROR
+	CMP R2, #0H    ; If return value is nonzero, return the error
 	BNE _$j_157ac
 	CMP R0, #64H   ; If not fraction sign, skip this part
 	BNE _$j_15796
 	MOV R0, #00000011B
 	BL _is_num_banned
-	BLT _$j_157ac  ; If ERROR value, matrix or vector pointer, return Syntax ERROR
+	BLT _$j_157ac  ; If ERROR value, matrix or vector pointer, return the error (Math ERROR)
 	MOV R0, #64H   ; Set to fraction sign again
 _$j_15796:
 	MOV ER2, BP
@@ -13305,7 +13304,7 @@ _$j_157ba:
 	BNE _$j_15850
 	CMP R7, #3H            ; If R7 = 3, throw Syntax ERROR
 	BEQ _$j_157b6
-	BL _f_15544
+	BL _is_num_mat_vct_cmplx
 	BGE _$j_157cc          ; If carry set, throw Math ERROR
 	MOV R2, #3H
 	POP PC
@@ -13555,10 +13554,10 @@ _$j_15990:
 	BEQ _$j_15964
 	CMP R0, #2CH           ; If not minus sign, return Syntax ERROR
 	BNE _$j_1598a
-_$j_15998:                 ; === Pre-parse BCD exponent ===
+_$j_15998:
 	XOR R11, #10000000B    ; Toggle negative bit (to handle multiple minus/negative signs)
 	BAL _$j_15964          ; Go back to main parse loop
-_$j_1599c:
+_$j_1599c:                 ; === Pre-parse BCD exponent ===
 	CMP R2, #1H            ; If not regular function, go to parse BCD exponent block
 	BNE _$j_159a4
 	CMP R0, #5FH           ; If negative sign, return Syntax ERROR
@@ -13763,30 +13762,30 @@ _$j_15af8:
 ; FUNCTION: GY460XF  Im 155B8
 _num_parse_const:
 	PUSH LR
-	CMP R7, #3H
+	CMP R7, #3H       ; If R7 < 3, jump below
 	BLT _$j_15b0a
-	BL _num_parse_2f
-	BNE _$j_15b5e
+	BL _num_parse_2f  ; Parse token 0x2F
+	BNE _$j_15b5e     ; If there is an error, return it
 _$j_15b0a:
-	CMP R0, #42H
+	CMP R0, #66       ; If not Ran#, jump below
 	BNE _$j_15b14
-	TB _table_mode.6
+	TB _table_mode.6  ; If in SOLVE mode, return Syntax ERROR
 	BNE _$j_15b60
 _$j_15b14:
-	CMP R0, #28H
+	CMP R0, #40       ; If token is a normal constant (CONST), skip below
 	BLT _$j_15b3c
-	BEQ _$j_15b32
-	ADD R0, #-29H
+	BEQ _$j_15b32     ; If imaginary value, copy number 0 to BP and return
+	ADD R0, #-41      ; Otherwise, call the corresponding function
 	SLL R0, #1
-	MOV R2, #BYTE1 _jmp_019a8
-	MOV R3, #BYTE2 _jmp_019a8
+	MOV R2, #BYTE1 _num_const_funcs
+	MOV R3, #BYTE2 _num_const_funcs
 	ADD R2, R0
 	ADDC R3, #0H
 	L ER2, [ER2]
 	MOV ER0, BP
 	BL ER2
-	MOV R2, R0
-	BEQ _$j_15b48
+	MOV R2, R0        ; Return any error
+	BEQ _$j_15b48     ; If no error, jump below
 	BAL _$j_15b5c
 _$j_15b32:
 	MOV R0, #BYTE1 _num_0
@@ -13801,9 +13800,9 @@ _$j_15b3c:
 	BL _num_cpy_cmplx_bp_er0
 _$j_15b48:
 	L R2, _mode
-	CMP R2, #0C4H  ; CMPLX mode
+	CMP R2, #0C4H     ; If not in CMPLX mode, return no error
 	BNE _$j_15b5a
-	MOV ER0, BP
+	MOV ER0, BP       ; Put 0 in imaginary part
 	ADD ER0, #0AH
 	MOV R2, #0H
 	BL _num_fromdigit
@@ -13814,7 +13813,7 @@ _$j_15b5c:
 _$j_15b5e:
 	POP PC
 _$j_15b60:
-	MOV R2, #2H
+	MOV R2, #2H       ; Syntax ERROR
 	POP PC
 
 ; FUNCTION: GY454XE  Re 15B64
@@ -14511,8 +14510,8 @@ EXTRN CODE	: _num_trunc__
 EXTRN CODE	: _num_frombyte
 EXTRN CODE	: _num_cpy_im
 EXTRN CODE	: _num_cpy
-EXTRN CODE	: _f_1B4A0
-EXTRN CODE	: _f_1B4B6
+EXTRN CODE	: _num_euler
+EXTRN CODE	: _num_pi
 EXTRN CODE	: _unk_1ac5e_460f
 EXTRN CODE	: _unk_1ac76_460f
 EXTRN CODE	: _unk_1ac86_460f
