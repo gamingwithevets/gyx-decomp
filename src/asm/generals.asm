@@ -8,11 +8,7 @@ ROMWINDOW 0, 7FFFH
 
 _stop_type			EQU 8E00H
 
-_pd_val_emu			EQU 0F050H
-_real_screen		EQU 0F800H
-_real_screen_10		EQU 0F80AH
-_real_screen_11		EQU 0F80BH
-_real_screen_end	EQU _real_screen+16*32-1
+_real_screen_end	EQU DSPR000+16*32-1
 
 $$NCODgenerals SEGMENT CODE 2H ANY
 $$NTABgenerals0 SEGMENT TABLE 2H #0
@@ -3573,8 +3569,8 @@ _$j_02d1c:
 	PUSH ER0
 	MOV R2, R4
 	MOV R3, #0H
-	MOV R0, #BYTE1 _real_screen
-	MOV R1, #BYTE2 _real_screen
+	MOV R0, #BYTE1 DSPR000
+	MOV R1, #BYTE2 DSPR000
 	BL _memset_n
 	POP ER0
 _$j_02d34:
@@ -4177,8 +4173,8 @@ _render:
 	MOV R0, #BYTE1 _screen_buffer
 	MOV R1, #BYTE2 _screen_buffer
 	PUSH ER0
-	MOV R2, #BYTE1 _real_screen
-	MOV R3, #BYTE2 _real_screen
+	MOV R2, #BYTE1 DSPR000
+	MOV R3, #BYTE2 DSPR000
 	MOV R0, #20H
 _$j_0313c:
 	POP EA
@@ -4207,8 +4203,8 @@ _get_screen_addr:
 	L R9, _use_rambuf
 	BNE _$j_0316c
 	MOV R8, #10H
-	MOV R10, #BYTE1 _real_screen
-	MOV R11, #BYTE2 _real_screen
+	MOV R10, #BYTE1 DSPR000
+	MOV R11, #BYTE2 DSPR000
 _$j_0316c:
 	LEA [ER2]
 	TB R1.7
@@ -4346,8 +4342,8 @@ _$j_03290:
 	PUSH ER0
 	MOV R2, #BYTE1 _screen_buffer
 	MOV R3, #BYTE2 _screen_buffer
-	MOV R0, #BYTE1 _real_screen
-	MOV R1, #BYTE2 _real_screen
+	MOV R0, #BYTE1 DSPR000
+	MOV R1, #BYTE2 DSPR000
 	BL _memcpy_nn  ; memcpy to real screen
 	POP ER0
 	POP PC
@@ -4622,14 +4618,14 @@ _f_0345E:
 ; FUNCTION: GY455XE  Im 0360C
 ; FUNCTION: GY460XF  Im 032A6
 _set_up_arrow:
-	SB _real_screen_11.7
+	SB DSPR011.7
 	RT
 
 ; FUNCTION: GY454XE  Re 03480
 ; FUNCTION: GY455XE  Im 03612
 ; FUNCTION: GY460XF  Im 032AC
 _set_down_arrow:
-	SB _real_screen_10.3
+	SB DSPR010.3
 	RT
 
 ; FUNCTION: GY454XE  Re 03486
@@ -4707,8 +4703,8 @@ _$j_0350e:
 	POP PC
 ELSE
 	PUSH ER2
-	MOV R3, #BYTE2 _pd_val_emu  ; These are probably the P pins on ES boards
-	MOV R2, #BYTE1 _pd_val_emu
+	MOV R3, #BYTE2 P2D  ; These are probably the P pins on ES boards
+	MOV R2, #BYTE1 P2D
 	L R0, [ER2]
 	POP ER2
 	RT
@@ -7193,14 +7189,14 @@ _set_scr_calculating:
 	MOV R0, #6H
 	ST R0, DSPCON0 ; Hide main screen area
 _$j_047a2:
-	RB 0F800H.4    ; Turn off [S]
-	RB 0F800H.2    ; Turn off [A]
-	RB 0F801H.1    ; Turn off STO
-	RB 0F802H.6    ; Turn off RCL
-	RB 0F80BH.7    ; Turn off ▲
-	RB 0F80AH.3    ; Turn off ▼
+	RB DSPR000.4   ; Turn off [S]
+	RB DSPR000.2   ; Turn off [A]
+	RB DSPR001.1   ; Turn off STO
+	RB DSPR002.6   ; Turn off RCL
+	RB DSPR011.7   ; Turn off ▲
+	RB DSPR010.3   ; Turn off ▼
 _$j_047ba:
-	RB 0F80BH.4    ; Turn off Disp
+	RB DSPR011.4   ; Turn off Disp
 	RT
 
 ; FUNCTION: GY454XE  Re 047C0
@@ -7209,7 +7205,7 @@ _$j_047ba:
 _set_disp_indicator:
 	CMP R0, #0H
 	BEQ _$j_047ba
-	SB 0F80BH.4    ; Turn on Disp
+	SB DSPR011.4   ; Turn on Disp
 	RT
 
 ; FUNCTION: GY454XE  Re 047CA
