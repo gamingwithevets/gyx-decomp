@@ -1,15 +1,15 @@
 /**************************************************************
 
-	 ML610CASESplus.H - SFR define Header file for CCU8
+	 ML610904.H - SFR define Header file for CCU8
 
 	 #CORE			  "nX-U8/100"
-	 #TARGET			"ML610CASESplus"
+	 #TARGET			"ML610904"
 	 #VERSION		  "1.01"
 	 Last Edition  January 23, 2026
 	 Copyright (C) 2026 GamingWithEvets Inc.
 **************************************************************/
-#ifndef _ML610CASESplus_H_
-#define _ML610CASESplus_H_
+#ifndef _ML610904_H_
+#define _ML610904_H_
 
 typedef struct{
   unsigned char b0  : 1 ;

@@ -42,7 +42,7 @@ del /f /s /q ~*.c 2>nul
 echo Compiling...
 for /r %%a in (*.c) do (
 ::	ccu8 /J /SS 980 /SD /TML610CASESplus /Om /Orpn /Zc /LP /Lv /ML %%a | findstr /L /C:"Error :"
-	ccu8 !cdefs! /J /SS 980 /SD /TML610CASESplus /Ot /Orpn /Zc /Faobj\%%~na.asm /Lv /ML %%a | findstr /L /C:"Error :"
+	ccu8 !cdefs! /J /SS 980 /SD /TML610904 /Ot /Orpn /Zc /Faobj\%%~na.asm /Lv /ML %%a | findstr /L /C:"Error :"
 	if !errorlevel! equ 0 goto exit
 	echo Compiled %%~nxa.
 )

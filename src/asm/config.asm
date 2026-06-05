@@ -6,7 +6,7 @@ which includes default settings and version information.
 For feature customization, see src/features/features.inc.
 */
 
-TYPE(ML610CASESplus)
+TYPE(ML610904)
 MODEL LARGE
 
 TSEG #1 AT 0FFD4H

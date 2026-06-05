@@ -1,14 +1,14 @@
 ;***************************************************************
-;       ML610CASESplus start up assembly source file
+;       ML610904 start up assembly source file
 ;       for CCU8 version 1.xx/2.xx/3.xx
 ;       LARGE CODE MODEL
 ;       ROMWINDOW  00000H-07FFFH
 ;       Version 1.00
-;       Last Edition  Aug 01, 2024
-;       Copyright (C) 2024 GamingWithEvets Inc. https://gamingwithevets.github.io
+;       Last Edition  June 05, 2026
+;       Copyright (C) 2026 GamingWithEvets Inc.
 ;***************************************************************
 
-        type(ML610CASESplus)
+        type(ML610904)
 
         model   large
         romwindow       0, 07fffh
@@ -24,8 +24,8 @@
         dw      $$brk_reset
 
 
-$$NCODml610casesplw segment code #0
-        rseg    $$NCODml610casesplw
+$$NCODml610904lw segment code #0
+        rseg    $$NCODml610904lw
 
 $$start_up:
 
@@ -218,7 +218,7 @@ $$NINITVAR segment data 2 #0
 $$NINITTAB segment table 2 any
 
 ;---------------------------------------------------------------
-;       Filling the Test area at code memory (for ML610CASESplus)
+;       Filling the Test area at code memory (for ML610904)
 ;---------------------------------------------------------------
         cseg #0 at 0f800h
         dw  100h    DUP 0ffffh
