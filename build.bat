@@ -89,7 +89,7 @@ if %errorlevel% equ 1 goto exit
 echo Generating label file...
 python ..\assets\map_to_label.py rom.map labels
 echo Disassembling...
-python ..\assets\disas.py rom.bin rom.asm
+python ..\assets\pyu8disasx\main_cli.py rom.bin -o rom.asm --all -d ..\assets\ML610904.dcl -l labels
 :done
 echo Done!
 goto exit

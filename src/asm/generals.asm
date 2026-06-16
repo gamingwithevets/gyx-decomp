@@ -358,7 +358,6 @@ _s_table_y:
 _s_table_freq:
 	;  " FREQ"
 	DB "\xec\xe5\xe9\xe4\xe8", 0
-	
 
 ; Unused
 ; DATA: GY454XE  Re 00936
