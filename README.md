@@ -50,5 +50,12 @@ As the U8/U16 SDK only officially supports Windows, these instructions below ass
 
 The resulting binary is a build that has all currently implemented features enabled and recurring decimals in dot notation, with the version code `GY45DX Ver--`. To build for a specific model, see [Building custom ROMs](#building-custom-roms).
 
+### IDEU8 project file
+Alternatively, we also provide an IDEU8 project file for building. Note that newer versions of the Development Tools do not provide this IDE.
+1. Perform steps 1-3 above.
+2. Open IDEU8, click File > Open... and select the `rom.pid` file.
+3. Click Project > Build or press F7.
+4. If needed, convert the outputted Intel Hex file to binary.
+
 ### Building custom ROMs
 To configure ROMs, edit `src/features/features.inc`. Note that this is just for feature toggles; you will need to edit other scripts to modify menus, key layouts, etc. See the comment in the aforementioned file for more information.

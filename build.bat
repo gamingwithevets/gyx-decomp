@@ -35,6 +35,7 @@ call %p%\setenv.bat "%l%\Bin;%p%\Bin" "%p%\Inc;%l%\Inc" "%l%\Dcl" "%p%\Lib"
 ::call C:\LAPIS\LEXIDE\BuildTools\Ver.20231124\setVer20231124.bat
 
 del /f /s /q ~*.c 2>nul
+del /f /s /q *.~* 2>nul
 
 ::echo C definitions: !cdefs!
 ::echo ASM definitions: !asmdefs!

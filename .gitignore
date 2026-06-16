@@ -5,3 +5,4 @@ commit.bat
 *.txt
 assets/__pycache__/
 orig/
+*.~*
