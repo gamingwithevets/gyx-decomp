@@ -1,3 +1,10 @@
+## We've moved!
+The decompilation project will continue on [Codeberg](https://codeberg.org/gwetm/gyx-decomp). See you there!
+
+This repository has also been archived, as a result.
+
+---
+
 This is a decompilation of the Casio ES PLUS **GYX** firmware, which includes code from the latest revisions of all calculators released before the fx-55 PLUS.
 
 Feel free to contribute by forking this repo and making a pull request. For more information, see [CONTRIBUTING.md](CONTRIBUTING.md).
